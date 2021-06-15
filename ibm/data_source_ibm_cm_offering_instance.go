@@ -97,6 +97,16 @@ func dataSourceIBMCmOfferingInstance() *schema.Resource {
 				Computed:    true,
 				Description: "id of the resource group",
 			},
+			"install_plan": &schema.Schema{
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "install plan for the subscription of the operator- can be either Automatic or Manual. Required for operator bundles",
+			},
+			"channel": &schema.Schema{
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "channel to target for the operator subscription. Required for operator bundles",
+			},
 		},
 	}
 }

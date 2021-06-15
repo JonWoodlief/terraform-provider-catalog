@@ -210,10 +210,11 @@ func waitUntilSuccess(d *schema.ResourceData, meta interface{}) error {
 		offeringInstance, response, err := catalogManagementClient.GetOfferingInstance(getOfferingInstanceOptions)
 		if err != nil {
 			log.Printf("[Debug] Get offering instance (%s) failed while waiting until provision was successful: %s", d.Id(), err)
+			continue
 		} else if *offeringInstance.LastOperation.State == inProgress {
 			continue
 		} else if *offeringInstance.LastOperation.State == failed {
-			return fmt.Errorf("Offering instance provisioning failed %s\n%s", err, response)
+			return fmt.Errorf("Offering instance provisioning failed %s", response)
 		} else if *offeringInstance.LastOperation.State == success {
 			return nil
 		}

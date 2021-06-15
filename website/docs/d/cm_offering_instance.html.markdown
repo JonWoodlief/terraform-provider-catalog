@@ -43,3 +43,5 @@ In addition to the argument reference list, you can access the following attribu
 - `version` - (String) The version an instance is installed from (but not from the version ID).
 - `schematics_workspace_id` - (String) The ID of the schematics workspace, for offering instances installed through schematics
 - `resource_group_id` - (String) The ID of the resource group this instance was installed into
+- `channel` - (String) Channel to target for the operator subscription. Required for operator bundles
+- `install_plan` - (String) Install plan for the subscription of the operator- can be either Automatic or Manual. Required for operator bundles

@@ -34,10 +34,12 @@ Review the argument reference that you can specify for your resource.
 - `cluster_region` - (Required, String) The cluster region for example, `us-south`.
 - `cluster_namespaces`- (Required, List) The list of target namespaces to install into.
 - `cluster_all_namespaces`- (Required, Bool) Designate to install into all namespaces.
-- `kind_format` - (Required, String) The format an instance such as `helm`, `operator`, `ova`. **Note** Currently the only supported formate is `operator`.
+- `kind_format` - (Required, String) The format an instance such as `helm`, `operator`, `operator-bundle`, `ova`. **Note** Currently the only supported formats are `operator` and `operator-bundle`.
 - `label` - (Required, String) The label for this instance.
 - `offering_id` - (Required, String) The offering ID an instance is created .
 - `version` - (Required, String) The version an instance was installed from (but not from the version ID).
+- `channel` - (Optional, String) Channel to target for the operator subscription. Required for operator bundles
+- `install_plan` - (Optional, String) Install plan for the subscription of the operator- can be either Automatic or Manual. Required for operator bundles
 
 
 ## Attribute reference
