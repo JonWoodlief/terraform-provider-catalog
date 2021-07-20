@@ -12,7 +12,7 @@ import (
 	"github.com/IBM/platform-services-go-sdk/catalogmanagementv1"
 )
 
-func TestAccIBMCmOffering(t *testing.T) {
+func TestAccIBMCmOffering2(t *testing.T) {
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
@@ -42,12 +42,14 @@ func testAccCheckIBMCmOfferingConfig() string {
 			catalog_id = ibm_cm_catalog.cm_catalog.id
 			label = "tf_test_offering"
 			tags = ["dev_ops", "target_roks", "operator"]
+			test_int = 1
+			test_float = 1.0
+			test_bool = false
+			test_map = {
+				test = "map"
+			}
 		}
 		
-		data "ibm_cm_offering" "cm_offering_data" {
-			catalog_identifier = ibm_cm_catalog.cm_catalog.id
-			offering_id = ibm_cm_offering.cm_offering.id
-		}
 		`)
 }
 

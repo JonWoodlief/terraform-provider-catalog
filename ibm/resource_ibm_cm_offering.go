@@ -153,6 +153,33 @@ func resourceIBMCmOffering() *schema.Resource {
 					},
 				},
 			},
+			"test_bool": &schema.Schema{
+				Type:        schema.TypeBool,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Internal testing, don't release this to prod",
+			},
+			"test_int": &schema.Schema{
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Internal testing, don't release this to prod",
+			},
+			"test_float": &schema.Schema{
+				Type:        schema.TypeFloat,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Internal testing, don't release this to prod",
+			},
+			"test_map": {
+				Type:        schema.TypeMap,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Internal testing, don't release this to prod",
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
