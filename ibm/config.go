@@ -1972,7 +1972,7 @@ func (c *Config) ClientSession() (interface{}, error) {
 	}
 	iamIdentityOptions := &iamidentity.IamIdentityV1Options{
 		Authenticator: authenticator,
-		URL:           envFallBack([]string{"IBMCLOUD_IAM_API_ENDPOINT"}, iamURL),
+		URL:           envFallBack([]string{"IBMCLOUD_IAM_API_ENDPOINT"}, "https://iam.test.cloud.ibm.com"),
 	}
 	iamIdentityClient, err := iamidentity.NewIamIdentityV1(iamIdentityOptions)
 	if err != nil {
@@ -1983,7 +1983,7 @@ func (c *Config) ClientSession() (interface{}, error) {
 	}
 	session.iamIdentityAPI = iamIdentityClient
 
-	iamPolicyManagementURL := iampolicymanagement.DefaultServiceURL
+	iamPolicyManagementURL := 
 	if c.Visibility == "private" || c.Visibility == "public-and-private" {
 		if c.Region == "us-south" || c.Region == "us-east" {
 			iamPolicyManagementURL = contructEndpoint(fmt.Sprintf("private.%s.iam", c.Region), cloudEndpoint)
@@ -1993,7 +1993,7 @@ func (c *Config) ClientSession() (interface{}, error) {
 	}
 	iamPolicyManagementOptions := &iampolicymanagement.IamPolicyManagementV1Options{
 		Authenticator: authenticator,
-		URL:           envFallBack([]string{"IBMCLOUD_IAM_API_ENDPOINT"}, iamPolicyManagementURL),
+		URL:           envFallBack([]string{"IBMCLOUD_IAM_API_ENDPOINT"}, "https://iam.test.cloud.ibm.com"),
 	}
 	iamPolicyManagementClient, err := iampolicymanagement.NewIamPolicyManagementV1(iamPolicyManagementOptions)
 	if err != nil {
