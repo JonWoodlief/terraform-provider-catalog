@@ -1162,6 +1162,9 @@ func (c *Config) ClientSession() (interface{}, error) {
 		}
 	}
 
+	os.Setenv("IBMCLOUD_IAM_ENDPOINT", "https://iam.test.cloud.ibm.com")
+	os.Setenv("IBMCLOUD_CATALOG_MANAGEMENT_API_ENDPOINT", "https://dev-cm.globalcatalog.test.cloud.ibm.com/api/v1-beta")
+
 	// Construct an "options" struct for creating the service client.
 	catalogManagementURL := "https://cm.globalcatalog.cloud.ibm.com/api/v1-beta"
 	if c.Visibility == "private" {
