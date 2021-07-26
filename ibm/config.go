@@ -1147,6 +1147,8 @@ func (c *Config) ClientSession() (interface{}, error) {
 
 	var authenticator core.Authenticator
 
+	os.Setenv("IBMCLOUD_IAM_API_ENDPOINT", "https://iam.test.cloud.ibm.com")
+
 	if c.BluemixAPIKey != "" {
 		authenticator = &core.IamAuthenticator{
 			ApiKey: c.BluemixAPIKey,
