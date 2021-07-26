@@ -1150,7 +1150,7 @@ func (c *Config) ClientSession() (interface{}, error) {
 	if c.BluemixAPIKey != "" {
 		authenticator = &core.IamAuthenticator{
 			ApiKey: c.BluemixAPIKey,
-			URL:    envFallBack([]string{"IBMCLOUD_IAM_API_ENDPOINT"}, "https://iam.cloud.ibm.com") + "/identity/token",
+			URL:    envFallBack([]string{"IBMCLOUD_IAM_API_ENDPOINT"}, "https://iam.test.cloud.ibm.com") + "/identity/token",
 		}
 	} else if strings.HasPrefix(sess.BluemixSession.Config.IAMAccessToken, "Bearer") {
 		authenticator = &core.BearerTokenAuthenticator{
@@ -1163,7 +1163,7 @@ func (c *Config) ClientSession() (interface{}, error) {
 	}
 
 	// Construct an "options" struct for creating the service client.
-	catalogManagementURL := "https://cm.globalcatalog.cloud.ibm.com/api/v1-beta"
+	catalogManagementURL := "https://cm.globalcatalog.test.cloud.ibm.com/api/v1-beta"
 	if c.Visibility == "private" {
 		session.catalogManagementClientErr = fmt.Errorf("Catalog Management resource doesnot support private endpoints")
 	}
