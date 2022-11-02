@@ -34,6 +34,26 @@ resource "ibm_container_vpc_cluster" "cluster" {
 }
 ```
 
+## Example with boot volume encryption
+In the following example, you can create a Gen-2 VPC cluster with a default worker pool with one worker with boot volume encryption:
+
+```terraform
+resource "ibm_container_vpc_cluster" "cluster" {
+  name              = "my_vpc_cluster"
+  vpc_id            = "r006-abb7c7ea-aadf-41bd-94c5-b8521736fadf"
+  kube_version      = "1.17.5"
+  flavor            = "bx2.2x8"
+  worker_count      = "1"
+  resource_group_id = data.ibm_resource_group.resource_group.id
+  zones {
+      subnet_id = "0717-0c0899ce-48ac-4eb6-892d-4e2e1ff8c9478"
+      name      = "us-south-1"
+    }
+  kms_instance_id = "8e9056e6-1936-4dd9-a0a1-51d824765e11"
+  crk = "804cb251-fa0a-46f5-a442-fe42cfb0ed5f"
+}
+```
+
 ### VPC Generation 2 Red Hat OpenShift on IBM Cloud cluster with existing OpenShift entitlement
 Create the Openshift Cluster with default worker pool entitlement with one worker node:
 
@@ -99,7 +119,7 @@ resource "ibm_is_vpc" "vpc1" {
 resource "ibm_is_subnet" "subnet1" {
   name                     = "mysubnet1"
   vpc                      = ibm_is_vpc.vpc1.id
-  zone                     = "us_south-1"
+  zone                     = "us-south-1"
   total_ipv4_address_count = 256
 }
 
@@ -156,8 +176,10 @@ Review the argument references that you can specify for your resource.
 - `entitlement` - (Optional, String) Entitlement reduces additional OCP Licence cost in OpenShift clusters. Use Cloud Pak with OCP Licence entitlement to create the OpenShift cluster. **Note** <ul><li> It is set only when the first time creation of the cluster, further modifications are not impacted. </li></ul> <ul><li> Set this argument to `cloud_pak` only if you use the cluster with a Cloud Pak that has an OpenShift entitlement.</li></ul>.
 - `force_delete_storage` - (Optional, Bool) If set to **true**,force the removal of persistent storage associated with the cluster during cluster deletion. Default value is **false**. **Note** If `force_delete_storage` parameter is used after provisioning the cluster, then, you need to execute `terraform apply` before `terraform destroy` for `force_delete_storage` parameter to take effect.
 - `flavor` - (Required, Forces new resource, String) The flavor of the VPC worker node that you want to use.
+- `image_security_enforcement` - (Optional, Bool) Set to **true** to enable image security enforcement policies in a cluster.
 - `name` - (Required, Forces new resource, String) The name of the cluster.
 - `kms_config` - (Optional, String) Use to attach a Key Protect instance to a cluster. Nested `kms_config` block has an `instance_id`, `crk_id`, `private_endpoint`.
+- `host_pool_id` - (Optional, String) If provided, the cluster will be associated with a dedicated host pool identified by this ID.
 
   Nested scheme for `kms_config`:
   - `crk_id` - (Optional, String) The ID of the customer root key (CRK).
@@ -188,6 +210,9 @@ Review the argument references that you can specify for your resource.
   Nested scheme for `zones`:
   - `name` - (Required, Forces new resource, String) The zone name for the default worker pool in a multizone cluster.
   - `subnet_id` - (Required, Forces new resource, String) The VPC subnet to assign the cluster's default worker pool.
+
+- `crk` - Root Key ID for boot volume encryption.
+- `kms_instance_id` - Instance ID for boot volume encryption.
 
 **Note**
 

@@ -19,6 +19,37 @@ data "ibm_resource_key" "resourceKeydata" {
   resource_instance_id  = ibm_resource_instance.resource.id
 }
 ```
+### Example to access resource credentials using credentials attribute:
+
+```terraform
+data "ibm_resource_key" "key" {
+  name                  = "myobjectKey"
+  resource_instance_id  = ibm_resource_instance.resource.id
+}
+output "access_key_id" {
+  value = data.ibm_resource_key.key.credentials["cos_hmac_keys.access_key_id"]
+}
+output "secret_access_key" {
+  value = data.ibm_resource_key.key.credentials["cos_hmac_keys.secret_access_key"]
+}
+```
+### Example to access resource credentials using credentials_json attribute:
+
+```terraform
+data "ibm_resource_key" "key" {
+  name                  = "myobjectKey"
+  resource_instance_id  = ibm_resource_instance.resource.id
+}
+locals {
+  resource_credentials = jsondecode(data.ibm_resource_key.key.credentials_json)
+}
+output "access_key_id" {
+  value = local.resource_credentials.cos_hmac_keys.access_key_id
+}
+output "secret_access_key" {
+  value = local.resource_credentials.cos_hmac_keys.secret_access_key
+}
+```
 
 ## Argument reference
 Review the argument references that you can specify for your data source.
@@ -31,7 +62,12 @@ Review the argument references that you can specify for your data source.
 ## Attribute reference
 In addition to all argument reference list, you can access the following attribute references after your data source is created.
 
-- `credentials` - The credentials associated with the key.
-- `id` - The unique identifier of the resource key.
-- `role` - The user role.
-- `status` - The status of the resource key.  
+- `credentials` - (Map) The credentials associated with the key.
+- `credentials_json` - (String) The credentials associated with the key in json format.
+- `crn` - (String) CRN of resource key.
+- `id` - (String) The unique identifier of the resource key.
+- `role` - (String) The user role.
+- `status` - (String) The status of the resource key.  
+
+## Note
+Credentials will be seen as redacted, if the user does not have access equal to or greater than the access of the service credentials. Please refer to the documentation to access credentials - https://cloud.ibm.com/docs/account?topic=account-service_credentials&interface=ui#viewing-credentials-ui.

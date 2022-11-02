@@ -46,6 +46,7 @@ In addition to all argument reference list, you can access the following attribu
 - `crn` - (String) The CRN of the cluster.
 - `health` - (String) The health of the cluster master.
 - `id` - (String) The unique identifier of the cluster.
+- `image_security_enforcement` - (Bool) Indicates if image security enforcement policies are enabled in a cluster.
 - `ingress_hostname`-  (String) The hostname that was assigned to your Ingress subdomain. 
 - `ingress_secret` - (String) The name of the Kubernetes secret that was created for your Ingress subdomain.
 - `kube_version` - (String) The Kubernetes version of the cluster, including the major.minor version.
@@ -66,6 +67,7 @@ In addition to all argument reference list, you can access the following attribu
 	- `worker_count` - (Integer) The total number of worker nodes in this worker pool.
 	- `isolation` - (String) The level of hardware isolation for the worker node. For VPC clusters, this value is always `shared`.
 	- `id` - (String) The ID of the worker pool.
+	- `host_pool_id` - (String) The ID of the dedicated host pool.
 	- `labels` - List of strings - A list of labels that are added to the worker pool.
 	- `zones` - List of objects - A list of zones that are attached to the worker pool.
 

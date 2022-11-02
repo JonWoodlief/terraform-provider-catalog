@@ -12,7 +12,7 @@ The IBM Cloud provider is used to manage IBM Cloud resources. The provider must 
 
 Use the navigation menu on the left to read about the available data sources and resources.
 
-## Example Usage of Provider
+## Example usage of provider
 
 Terraform 0.13 and later:
 ```terraform
@@ -20,7 +20,7 @@ terraform {
   required_providers {
     ibm = {
       source = "IBM-Cloud/ibm"
-      version = "~> 1.12.0"
+      version = ">= 1.12.0"
     }
   }
 }
@@ -64,7 +64,7 @@ resource "ibm_is_vpc" "testacc_vpc" {
   name = "test-vpc"
 }
 ```
-## Example Usage of Resources:
+## Example usage of resources:
 
 ```terraform
 
@@ -197,7 +197,7 @@ terraform plan
   * Find user name in the `VPN password` section under `User Details` tab
 
 
-## Argument Reference
+## Argument reference
 
 The following arguments are supported in the `provider` block:
 
@@ -255,4 +255,4 @@ export IBMCLOUD_UAA_ENDPOINT="https://iam.cloud.ibm.com/cloudfoundry/login/<regi
 
 ## References 
 
-* [IBM Cloud Terraform Docs](https://cloud.ibm.com/docs/ibm-cloud-provider-for-terraform?topic=ibm-cloud-provider-for-terraform-index-of-terraform-resources-and-data-sources)
+* [IBM Cloud Terraform Docs](https://cloud.ibm.com/docs/ibm-cloud-provider-for-terraform?topic=ibm-cloud-provider-for-terraform-resources-datasource-list)

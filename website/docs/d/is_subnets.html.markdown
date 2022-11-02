@@ -7,50 +7,61 @@ description: |-
 ---
 
 # ibm_is_subnets
-Retrieve information about of an existing VPC subnets in an IBM Cloud account. For more information, about infrastructure subnets, see [attaching subnets to a routing table](https://cloud.ibm.com/docs/vpc?topic=vpc-attach-subnets-routing-table).
+Retrieve information about of an existing VPC subnets in an IBM Cloud account as a read only data source. For more information, about infrastructure subnets, see [attaching subnets to a routing table](https://cloud.ibm.com/docs/vpc?topic=vpc-attach-subnets-routing-table).
 
-## Example usage
+**Note:** 
+VPC infrastructure services are a regional specific based endpoint, by default targets to `us-south`. Please make sure to target right region in the provider block as shown in the `provider.tf` file, if VPC service is created in region other than `us-south`.
 
-```hcl
-data "ibm_resource_group" "resourceGroup" {
-  name = "Default"
-}
+**provider.tf**
 
-resource "ibm_is_vpc" "testacc_vpc" {
-  name = "test"
-}
-
-resource "ibm_is_vpc_routing_table" "test_cr_route_table1" {
-  name = "test-cr-route-table1"
-  vpc  = ibm_is_vpc.testacc_vpc.id
-}
-
-resource "ibm_is_subnet" "testacc_subnet" {
-  name            = "test_subnet"
-  vpc             = ibm_is_vpc.testacc_vpc.id
-  zone            = "us-south-1"
-  ipv4_cidr_block = "192.168.0.0/1"
-  routing_table   = ibm_is_vpc_routing_table.test_cr_route_table1.routing_table
-  resource_group  = data.ibm_resource_group.resourceGroup.id
-}
-
-data "ibm_is_subnets" "ds_subnets_resource_group" {
-  resource_group = data.ibm_resource_group.resourceGroup.id
-}
-
-data "ibm_is_subnets" "ds_subnets_routing_table_name" {
-  routing_table_name = ibm_is_vpc_routing_table.test_cr_route_table1.name
-}
-
-data "ibm_is_subnets" "ds_subnets_routing_table" {
-  routing_table = ibm_is_vpc_routing_table.test_cr_route_table1.id
-}
-
-data "ibm_is_subnets" "ds_subnets" {
+```terraform
+provider "ibm" {
+  region = "eu-gb"
 }
 ```
 
-## Argument Reference
+## Example usage
+
+```terraform
+data "ibm_resource_group" "example" {
+  name = "Default"
+}
+
+resource "ibm_is_vpc" "example" {
+  name = "example-vpc"
+}
+
+resource "ibm_is_vpc_routing_table" "example" {
+  name = "example-vpc-routing-table"
+  vpc  = ibm_is_vpc.example.id
+}
+
+resource "ibm_is_subnet" "example" {
+  name            = "example-subnet"
+  vpc             = ibm_is_vpc.example.id
+  zone            = "us-south-1"
+  ipv4_cidr_block = "10.240.0.0/24"
+  routing_table   = ibm_is_vpc_routing_table.example.routing_table
+  resource_group  = data.ibm_resource_group.example.id
+}
+
+data "ibm_is_subnets" "example1" {
+  resource_group = data.ibm_resource_group.example.id
+}
+
+data "ibm_is_subnets" "example2" {
+  routing_table_name = ibm_is_vpc_routing_table.example.name
+}
+
+data "ibm_is_subnets" "example3" {
+  routing_table = ibm_is_vpc_routing_table.example.id
+}
+
+data "ibm_is_subnets" "example4" {
+}
+```
+
+## Argument reference
 
 Review the argument references that you can specify for your data source. 
 
@@ -72,8 +83,17 @@ You can access the following attribute references after your data source is crea
 	- `name` - (String) The name of the subnet.
 	- `network_acl` - (String) The access control list (ACL) that is attached to the subnet.
     - `public_gateway`- (Bool) If set to **true**, a public gateway is attached to the subnet. If set to **false**, no public gateway for this subnet exists.
-	- `resource_group` - (String) The resource group that the subnet belongs to.
+	- `resource_group` - (String) The resource group id, that the subnet belongs to.
     - `total_ipv4_address_count`- (Integer) The total number of IPv4 addresses in the subnet.
     - `status` - (String) The status of the subnet.
+  - `routing_table` -  (List) The routing table for this subnet. 
+    Nested scheme for `routing_table`:
+      - `deleted` -  (List) If present, this property indicates the referenced resource has been deleted and provides some supplementary information.
+      Nested scheme for `deleted`:
+        - `more_info` -  (String) Link to documentation about deleted resources.
+      - `href` -  (String) The URL for this routing table.
+      - `id` -  (String) The unique identifier for this routing table.
+      - `name` -  (String) The user-defined name for this routing table.
+      - `resource_type` -  (String) The type of resource referenced.
 	- `vpc` - (String) The ID of the VPC that this subnet belongs to.
 	- `zone` - (String) The zone where the subnet was created.

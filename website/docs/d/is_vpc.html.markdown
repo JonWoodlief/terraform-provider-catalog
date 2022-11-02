@@ -7,26 +7,37 @@ description: |-
 ---
 
 # ibm_is_vpc
-Retrieve information of an existing IBM Virtual Private cloud as a read-only data source. For more information, about VPC, see [getting started with Virtual Private Cloud (VPC)](https://cloud.ibm.com/docs/vpc?topic=vpc-getting-started).
+Retrieve information of an existing IBM Virtual Private cloud. For more information, about VPC, see [getting started with Virtual Private Cloud (VPC)](https://cloud.ibm.com/docs/vpc?topic=vpc-getting-started).
 
+**Note:** 
+VPC infrastructure services are a regional specific based endpoint, by default targets to `us-south`. Please make sure to target right region in the provider block as shown in the `provider.tf` file, if VPC service is created in region other than `us-south`.
+
+**provider.tf**
+
+```terraform
+provider "ibm" {
+  region = "eu-gb"
+}
+```
 
 ## Example usage
 
 ```terraform
-resource "ibm_is_vpc" "testacc_vpc" {
-  name = "test"
+resource "ibm_is_vpc" "example" {
+  name = "example-vpc"
 }
 
-data "ibm_is_vpc" "ds_vpc" {
-  name = "test"
+data "ibm_is_vpc" "example" {
+  name = "example-vpc"
 }
-
 ```
 
 ## Argument reference
 Review the argument references that you can specify for your data source. 
 
-- `name` - (Required, String) The name of the VPC.
+~> **Note:** `name` and `identifier` are mutually exclusive. One of them is required.
+- `name` - (Optional, String) The name of the VPC.
+- `identifier` - (Optional, String) The id of the VPC.
 
 ## Attribute reference
 In addition to all argument reference list, you can access the following attribute references after your data source is created. 

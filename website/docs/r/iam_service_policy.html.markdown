@@ -16,14 +16,21 @@ Create, update, or delete an IAM service policy. For more information, about IAM
 ### Service policy for all Identity and Access enabled services 
 
 ```terraform
-resource "ibm_iam_service_id" "serviceID" {
+resource "ibm_iam_service_id" "service_id" {
   name = "test"
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = ibm_iam_service_id.serviceID.id
+  iam_service_id = ibm_iam_service_id.service_id.id
   roles          = ["Viewer"]
   description    = "IAM Service Policy"
+  
+  resource_tags {
+    name = "env"
+    value = "dev"
+  }
+
+  transaction_id     = "terraformServicePolicy"
 }
 
 ```
@@ -31,16 +38,17 @@ resource "ibm_iam_service_policy" "policy" {
 ### Service Policy using service with region
 
 ```terraform
-resource "ibm_iam_service_id" "serviceID" {
+resource "ibm_iam_service_id" "service_id" {
   name = "test"
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = ibm_iam_service_id.serviceID.id
-  roles          = ["Viewer"]
+  iam_service_id = ibm_iam_service_id.service_id.id
+  roles          = ["Viewer", "Manager"]
 
   resources {
-    service = "cloud-object-storage"
+    service = "cloudantnosqldb"
+    region  = "us-south"
   }
 }
 
@@ -48,7 +56,7 @@ resource "ibm_iam_service_policy" "policy" {
 ### Service policy by using resource instance 
 
 ```terraform
-resource "ibm_iam_service_id" "serviceID" {
+resource "ibm_iam_service_id" "service_id" {
   name = "test"
 }
 
@@ -60,7 +68,7 @@ resource "ibm_resource_instance" "instance" {
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = ibm_iam_service_id.serviceID.id
+  iam_service_id = ibm_iam_service_id.service_id.id
   roles          = ["Manager", "Viewer", "Administrator"]
 
   resources {
@@ -74,7 +82,7 @@ resource "ibm_iam_service_policy" "policy" {
 ### Service policy by using resource group 
 
 ```terraform
-resource "ibm_iam_service_id" "serviceID" {
+resource "ibm_iam_service_id" "service_id" {
   name = "test"
 }
 
@@ -83,7 +91,7 @@ data "ibm_resource_group" "group" {
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = ibm_iam_service_id.serviceID.id
+  iam_service_id = ibm_iam_service_id.service_id.id
   roles          = ["Viewer"]
 
   resources {
@@ -97,7 +105,7 @@ resource "ibm_iam_service_policy" "policy" {
 ### Service policy by using resource and resource type 
 
 ```terraform
-resource "ibm_iam_service_id" "serviceID" {
+resource "ibm_iam_service_id" "service_id" {
   name = "test"
 }
 
@@ -106,7 +114,7 @@ data "ibm_resource_group" "group" {
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = ibm_iam_service_id.serviceID.id
+  iam_service_id = ibm_iam_service_id.service_id.id
   roles          = ["Administrator"]
 
   resources {
@@ -120,7 +128,7 @@ resource "ibm_iam_service_policy" "policy" {
 ### Service policy by using attributes 
 
 ```terraform
-resource "ibm_iam_service_id" "serviceID" {
+resource "ibm_iam_service_id" "service_id" {
   name = "test"
 }
 
@@ -129,7 +137,7 @@ data "ibm_resource_group" "group" {
 }
 
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = ibm_iam_service_id.serviceID.id
+  iam_service_id = ibm_iam_service_id.service_id.id
   roles          = ["Administrator"]
 
   resources {
@@ -149,7 +157,7 @@ provider "ibm" {
     alias             = "accA"
     ibmcloud_api_key  = "Account A Api Key"
 }
-resource "ibm_iam_service_id" "serviceID" {
+resource "ibm_iam_service_id" "service_id" {
   provider = ibm.accA
   name     = "test"
 }
@@ -160,7 +168,7 @@ provider "ibm" {
 }
 resource "ibm_iam_service_policy" "policy" {
   provider       =  ibm.accB
-  iam_id         =  ibm_iam_service_id.serviceID.iam_id
+  iam_id         =  ibm_iam_service_id.service_id.iam_id
   roles          =  ["Reader"]
   resources {
     service = "cloud-object-storage"
@@ -172,11 +180,11 @@ resource "ibm_iam_service_policy" "policy" {
 ### Service policy by using resource_attributes
 
 ```terraform
-resource "ibm_iam_service_id" "serviceID" {
+resource "ibm_iam_service_id" "service_id" {
   name = "test"
 }
 resource "ibm_iam_service_policy" "policy" {
-  iam_service_id = ibm_iam_service_id.serviceID.id
+  iam_service_id = ibm_iam_service_id.service_id.id
   roles           = ["Viewer"]
   resource_attributes {
     name  = "resource"
@@ -190,6 +198,25 @@ resource "ibm_iam_service_policy" "policy" {
 }
 ```
 
+### Service Policy using service_type with region
+
+```terraform
+resource "ibm_iam_service_id" "service_id" {
+  name = "test"
+}
+
+resource "ibm_iam_service_policy" "policy" {
+  iam_service_id = ibm_iam_service_id.service_id.id
+  roles          = ["Viewer"]
+
+  resources {
+    service_type = "service"
+    region = "us-south"
+	}
+}
+
+```
+
 ## Argument reference
 Review the argument references that you can specify for your resource. 
 
@@ -200,7 +227,8 @@ Review the argument references that you can specify for your resource.
 - `resources` - (List of Objects) Optional- A nested block describes the resource of this policy.**Note** Conflicts with `account_management` and `resource_attributes`.
 
   Nested scheme for `resources`:
-  - `service`  (Optional, String) The service name of the policy definition. You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`.
+  - `service`  (Optional, String) The service name of the policy definition. You can retrieve the value by running the `ibmcloud catalog service-marketplace` or `ibmcloud catalog search`. Attributes service, service_type are mutually exclusive.
+  - `service_type`  (Optional, String) The service type of the policy definition. **Note** Attributes service, service_type are mutually exclusive.
   - `resource_instance_id` - (Optional, String) The ID of the resource instance of the policy definition.
   - `region` - (Optional, String) The region of the policy definition.
   - `resource_type` - (Optional, String) The resource type of the policy definition.
@@ -214,7 +242,15 @@ Review the argument references that you can specify for your resource.
   - `value` - (Required, String) The value of an attribute.
   - `operator` - (Optional, String) Operator of an attribute. The default value is `stringEquals`. **Note** Conflicts with `account_management` and `resources`.
 - `roles` - (Required, List) A comma separated list of roles. Valid roles are `Writer`, `Reader`, `Manager`, `Administrator`, `Operator`, `Viewer`, and `Editor`. For more information, about supported service specific roles, see  [IAM roles and actions](https://cloud.ibm.com/docs/account?topic=account-iam-service-roles-actions)
-- `tags`  - (Optional, List of Strings) A list of tags with the service policy instance. **Note** Tags are managed locally and not stored in the IBM Cloud service endpoint at this moment.
+
+- `resource_tags`  (Optional, List)  A nested block describing the access management tags.  **Note** `resource_tags` are only allowed in policy with resource attribute serviceType, where value is equal to service.
+  
+  Nested scheme for `resource_tags`:
+  - `name` - (Required, String) The key of an access management tag. 
+  - `value` - (Required, String) The value of an access management tag.
+  - `operator` - (Optional, String) Operator of an attribute. The default value is `stringEquals`.
+  
+- `transaction_id`- (Optional, String) The TransactionID can be passed to your request for tracking the calls.
 
 ## Attribute reference
 In addition to all argument reference list, you can access the following attribute reference after your resource is created.

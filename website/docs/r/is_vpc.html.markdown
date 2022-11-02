@@ -10,12 +10,23 @@ description: |-
 # ibm_is_vpc
 Create, update, or delete a Virtual Private Cloud (VPC). VPCs allow you to create your own space in IBM Cloud to run an isolated environment within the public cloud. VPC gives you the security of a private cloud, with the agility and ease of a public cloud. For more information, about VPC, see [getting started with Virtual Private Cloud](https://cloud.ibm.com/docs/vpc?topic=vpc-getting-started).
 
+**Note:** 
+VPC infrastructure services are a regional specific based endpoint, by default targets to `us-south`. Please make sure to target right region in the provider block as shown in the `provider.tf` file, if VPC service is created in region other than `us-south`.
+
+**provider.tf**
+
+```terraform
+provider "ibm" {
+  region = "eu-gb"
+}
+```
+
 ## Example usage
 The following example to create a VPC:
 
 ```terraform
-resource "ibm_is_vpc" "testacc_vpc" {
-  name = "test"
+resource "ibm_is_vpc" "example" {
+  name = "example-vpc"
 }
 
 ```
@@ -32,7 +43,6 @@ Review the argument references that you can specify for your resource.
 
 - `address_prefix_management` - (Optional, Forces new resource, String) Indicates whether a default address prefix should be created automatically `auto` or manually `manual` for each zone in this VPC. Default value is `auto`.
 - `classic_access` - (Optional, Bool) Specify if you want to create a VPC that can connect to classic infrastructure resources. Enter **true** to set up private network connectivity from your VPC to classic infrastructure resources that are created in the same IBM Cloud account, and **false** to disable this access. If you choose to not set up this access, you cannot enable it after the VPC is created. Make sure to review the [prerequisites](https://cloud.ibm.com/docs/vpc-on-classic-network?topic=vpc-on-classic-setting-up-access-to-your-classic-infrastructure-from-vpc#vpc-prerequisites) before you create a VPC with classic infrastructure access. Note that you can enable one VPC for classic infrastructure access per IBM Cloud account only.
-- `default_network_acl`- (Deprecated, String) The ID of the default network ACL.
 - `default_network_acl_name` - (Optional, String) Enter the name of the default network access control list (ACL).
 - `default_security_group_name` - (Optional, String) Enter the name of the default security group.
 - `default_routing_table_name` - (Optional, String) Enter the name of the default routing table.

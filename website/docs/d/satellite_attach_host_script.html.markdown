@@ -11,17 +11,17 @@ Retrieve information of an existing IBM Satellite location registration script a
 
 ## Example usage
 
-###  Sample to create satellite host script to attach IBM host to Satellite control plane
+###  Sample to read satellite host script to attach IBM host to Satellite control plane
 
 ```terraform
 data "ibm_satellite_attach_host_script" "script" {
   location          = var.location
-  labels            = var.labels
+  labels            = ["cpu:4"]
   host_provider     = "ibm"
 }
 ```
 
-###  Sample to create satellite host script to attach AWS EC2 host to Satellite control plane
+###  Sample to read satellite host script to attach AWS EC2 host to Satellite control plane
 
 ```terraform
 data "ibm_satellite_attach_host_script" "script" {
@@ -31,19 +31,36 @@ data "ibm_satellite_attach_host_script" "script" {
   host_provider     = "aws"
 }
 ```
+###  Sample to read satellite host script to attach IBM host to Satellite control plane
+
+```terraform
+data "ibm_satellite_attach_host_script" "script" {
+  location      = var.location
+  custom_script = <<EOF
+subscription-manager refresh
+subscription-manager repos --enable rhel-server-rhscl-7-rpms
+subscription-manager repos --enable rhel-7-server-optional-rpms
+subscription-manager repos --enable rhel-7-server-rh-common-rpms
+subscription-manager repos --enable rhel-7-server-supplementary-rpms
+subscription-manager repos --enable rhel-7-server-extras-rpms
+EOF
+}
+
+```
 
 ## Argument reference
 Review the argument references that you can specify for your data source.
 
+- `coreos_host`	   = (Optional, Bool) True if attaching a CoreOS host to a CoreOS-enabled location. Host attach script will be in ignition file format. If attaching a RHEL host to a location, then the value is false.
+- `custom_script` - (Optional, String) RHEL hosts only. The custom script that has to be appended to generated host script file. Either `custom_script` or `host_provider` is required. This `custom_script` will be appended to the downloaded host attach script. Find custom scripts for respective cloud providers [aws](https://cloud.ibm.com/docs/satellite?topic=satellite-aws#aws-host-attach), [google](https://cloud.ibm.com/docs/satellite?topic=satellite-gcp#gcp-host-attach), [azure](https://cloud.ibm.com/docs/satellite?topic=satellite-azure#azure-host-attach), [ibm](https://cloud.ibm.com/docs/satellite?topic=satellite-ibm#ibm-host-attach).
 - `location` - (Required, String) The name or ID of the Satellite location.
+- `host_provider` - (Optional, String) The name of host provider, such as `ibm`, `aws` or `azure`.
+- `labels` - (Optional, Set(Strings)) The set of key-value pairs to label the host, such as `["cpu:4"]` to describe the host capabilities.
+- `script_dir` - (Optional, String) The directory path to store the generated script.
 
 ## Attributes reference
 In addition to the argument reference list, you can access the following attribute reference after your resource is created.
 
 - `id` - The unique identifier of the location.
-- `labels` - (Strings) The key-value pairs to label the host, such as `cpu=4` to describe the host capabilities.
-- `script_dir` - (String) The directory path to store the generated script.
-- `host_provider` - (String) The name of host provider, such as `ibm`, `aws` or `azure`.
 - `script_path` -  (String) Directory path to store the generated script.
 - `host_script` -  (String) The raw content of the script file that was read.
-

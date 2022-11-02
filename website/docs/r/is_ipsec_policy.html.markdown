@@ -10,13 +10,23 @@ description: |-
 # ibm_is_ipsec_policy
 Create, update, or delete an ipsec policy resource. For more information, about ipsec policy, see [creating an IPsec policy](https://cloud.ibm.com/docs/vpc?topic=vpc-creating-ipsec-policy).
 
+**Note:** 
+VPC infrastructure services are a regional specific based endpoint, by default targets to `us-south`. Please make sure to target right region in the provider block as shown in the `provider.tf` file, if VPC service is created in region other than `us-south`.
+
+**provider.tf**
+
+```terraform
+provider "ibm" {
+  region = "eu-gb"
+}
+```
 
 ## Example usage
 In the following example, you can create a IPsec policy:
 
 ```terraform
 resource "ibm_is_ipsec_policy" "example" {
-  name                     = "test"
+  name                     = "example-ipsec-policy"
   authentication_algorithm = "md5"
   encryption_algorithm     = "triple_des"
   pfs                      = "disabled"
@@ -27,8 +37,19 @@ resource "ibm_is_ipsec_policy" "example" {
 ## Argument reference
 Review the argument references that you can specify for your resource. 
 
-- `authentication_algorithm` - (Required, String) Enter the algorithm that you want to use to authenticate `IPSec` peers. Available options are `md5`, `sha1`, or `sha256`.
-- `encryption_algorithm` - (Required, String) Enter the algorithm that you want to use to encrypt data. Available options are: `triple_des`, `aes128`, or `aes256`. No.
+- `authentication_algorithm` - (Required, String) Enter the algorithm that you want to use to authenticate `IPSec` peers. Available options are `md5`, `sha1`,  `sha256`, `sha512`, `sha384`, `disabled`.
+
+  ~> **Note**
+  The `md5` and `sha1` algorithms have been deprecated and support will be removed from November 2022
+
+  ~> **Note**
+  `authentication_algorithm` must be set to `disabled` if and only if the `encryption_algorithm` is `aes128gcm16`, `aes192gcm16`, or `aes256gcm16`
+
+- `encryption_algorithm` - (Required, String) Enter the algorithm that you want to use to encrypt data. Available options are: `triple_des`, `aes128`, `aes192`, `aes256`, `aes128gcm16`, `aes192gcm16`, `aes256gcm16`
+
+  ~> **Note**
+  The `triple_des` algorithm has been deprecated and support will be removed from November 2022
+
 - `key_lifetime`  - (Optional, Integer) Enter the time in seconds that your encryption key can be used before it expires. You must enter a number between 300 and 86400. If you do not specify this option, 3600 seconds is used.
 - `name` - (Required, String) Enter the name for your IPSec policy.
 - `pfs` - (Required, String) Enter the Perfect Forward Secrecy protocol that you want to use during a session. Available options are `disabled`, `group_2`, `group_5`, and `group_14`.
