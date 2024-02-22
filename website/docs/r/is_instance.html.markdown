@@ -315,6 +315,7 @@ resource "ibm_is_instance" "example" {
   profile = "cx2-2x4"
   catalog_offering {
     version_crn = data.ibm_is_images.example.images.0.catalog_offering.0.version.0.crn
+    plan_crn = "crn:v1:staging:public:globalcatalog-collection:global::1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc:plan:sw.1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc.7c7210da-bc40-418f-9a0a-af994040c13c-global"
   }
   primary_network_interface {
     subnet = ibm_is_subnet.example.id
@@ -369,6 +370,7 @@ resource "ibm_is_instance" "example" {
   profile = "cx2-2x4"
   catalog_offering {
     version_crn = data.ibm_is_images.example.images.0.catalog_offering.0.version.0.crn
+    plan_crn = "crn:v1:staging:public:globalcatalog-collection:global::1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc:plan:sw.1082e7d2-5e2f-0a11-a3bc-f88a8e1931fc.7c7210da-bc40-418f-9a0a-af994040c13c-global"
   }
   primary_network_interface {
     subnet = ibm_is_subnet.example.id
@@ -431,6 +433,7 @@ Review the argument references that you can specify for your resource.
   Nested scheme for `catalog_offering`:
   - `offering_crn` - (Optional, String) The CRN for this catalog offering. Identifies a catalog offering by this unique property
   - `version_crn` - (Optional, String) The CRN for this version of a catalog offering. Identifies a version of a catalog offering by this unique property
+  - `plan_crn` - (Optional, String) The CRN for this catalog offering version's billing plan. If unspecified, no billing plan will be used (free). Must be specified for catalog offering versions that require a billing plan to be used.
  
     ~> **Note:**
     `offering_crn` conflicts with `version_crn`, both are mutually exclusive. `catalog_offering` and `image` id are mutually exclusive.
@@ -547,6 +550,15 @@ In addition to all argument reference list, you can access the following attribu
   - `name` - (String) The name of the boot volume.
   - `profile` - (String) The profile of the volume.
   - `size`- (Integer) The capacity of the volume in gigabytes.
+  - `catalog_offering` - (List) The [catalog](https://cloud.ibm.com/docs/account?topic=account-restrict-by-user&interface=ui) offering or offering version to use when provisioning this virtual server instance. If an offering is specified, the latest version of that offering will be used. The specified offering or offering version may be in a different account in the same [enterprise](https://cloud.ibm.com/docs/account?topic=account-what-is-enterprise), subject to IAM policies.
+  
+  Nested scheme for `catalog_offering`:
+    - `offering_crn` - (String) The CRN for this catalog offering. Identifies a catalog offering by this unique property
+    - `version_crn` - (String) The CRN for this version of a catalog offering. Identifies a version of a catalog offering by this unique property
+    - `plan_crn` - (String) The CRN for this catalog offering version's billing plan
+    - `deleted` - (List) If present, this property indicates the referenced resource has been deleted, and provides some supplementary information.
+		  Nested schema for `deleted`:
+      - `more_info`  - (String) Link to documentation about deleted resources.
 - `crn` - (String) The CRN of the instance.
 - `disks` - (List of Strings) The collection of the instance's disks. Nested `disks` blocks have the following structure:
 
