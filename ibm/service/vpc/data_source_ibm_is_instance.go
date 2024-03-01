@@ -1707,6 +1707,7 @@ func resourceIbmIsInstanceCatalogOfferingVersionPlanReferenceDeletedToMap(catalo
 	catalogOfferingVersionPlanReferenceDeletedMap["more_info"] = catalogOfferingVersionPlanReferenceDeleted.MoreInfo
 
 	return catalogOfferingVersionPlanReferenceDeletedMap
+}
 func dataSourceIBMIsInstanceInstanceNetworkAttachmentReferenceToMap(model *vpcv1.InstanceNetworkAttachmentReference) (map[string]interface{}, error) {
 	modelMap := make(map[string]interface{})
 	if model.Deleted != nil {
