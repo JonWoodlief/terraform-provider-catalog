@@ -272,6 +272,25 @@ func DataSourceIBMISInstance() *schema.Resource {
 							Computed:    true,
 							Description: "Identifies a version of a catalog offering by a unique CRN property",
 						},
+						isInstanceCatalogOfferingPlanCrn: {
+							Type:        schema.TypeString,
+							Computed:    true,
+							Description: "The CRN for this catalog offering version's billing plan",
+						},
+						"deleted": {
+							Type:        schema.TypeList,
+							Computed:    true,
+							Description: "If present, this property indicates the referenced resource has been deleted and provides some supplementary information.",
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"more_info": {
+										Type:        schema.TypeString,
+										Computed:    true,
+										Description: "Link to documentation about deleted resources.",
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -1136,6 +1155,15 @@ func instanceGetByName(d *schema.ResourceData, meta interface{}, name string) er
 		catalogList := make([]map[string]interface{}, 0)
 		catalogMap := map[string]interface{}{}
 		catalogMap[isInstanceCatalogOfferingVersionCrn] = versionCrn
+		if instance.CatalogOffering.Plan != nil {
+			if instance.CatalogOffering.Plan.CRN != nil && *instance.CatalogOffering.Plan.CRN != "" {
+				catalogMap[isInstanceCatalogOfferingPlanCrn] = *instance.CatalogOffering.Plan.CRN
+			}
+			if instance.CatalogOffering.Plan.Deleted != nil {
+				deletedMap := resourceIbmIsInstanceCatalogOfferingVersionPlanReferenceDeletedToMap(*instance.CatalogOffering.Plan.Deleted)
+				catalogMap["deleted"] = []map[string]interface{}{deletedMap}
+			}
+		}
 		catalogList = append(catalogList, catalogMap)
 		d.Set(isInstanceCatalogOffering, catalogList)
 	}
@@ -1673,6 +1701,13 @@ func dataSourceInstanceFlattenLifecycleReasons(lifecycleReasons []vpcv1.Instance
 	return lifecycleReasonsList
 }
 
+func resourceIbmIsInstanceCatalogOfferingVersionPlanReferenceDeletedToMap(catalogOfferingVersionPlanReferenceDeleted vpcv1.CatalogOfferingVersionPlanReferenceDeleted) map[string]interface{} {
+	catalogOfferingVersionPlanReferenceDeletedMap := map[string]interface{}{}
+
+	catalogOfferingVersionPlanReferenceDeletedMap["more_info"] = catalogOfferingVersionPlanReferenceDeleted.MoreInfo
+
+	return catalogOfferingVersionPlanReferenceDeletedMap
+}
 func dataSourceIBMIsInstanceInstanceNetworkAttachmentReferenceToMap(model *vpcv1.InstanceNetworkAttachmentReference) (map[string]interface{}, error) {
 	modelMap := make(map[string]interface{})
 	if model.Deleted != nil {
